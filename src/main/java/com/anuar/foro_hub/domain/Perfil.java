@@ -29,17 +29,5 @@ public class Perfil {
 
     private String nombre;
 
-    @Column(name = "correo_electronico", unique = true)
-    private String correoElectronico;
-
-    private String contrasena;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "usuario_perfil",
-        joinColumns = @JoinColumn(name = "usuario_id"),
-        inverseJoinColumns = @JoinColumn(name = "perfil_id"))
-    private Set<Perfil> perfiles;
-
 
 }

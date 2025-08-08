@@ -16,7 +16,7 @@ public interface TopicoRepository extends
         Optional<Curso> findByTitulo(String curso);
 
         @Query(value = "select new com.anuar.foro_hub.dto.request.TopicoDto" +
-                        "(t.titulo, t.mensaje, t.autor.nombre , t.curso.nombre) " +
+                        "(t.titulo, t.mensaje, t.autor.id , t.curso.id) " +
                         "FROM Topico t " +
                         "WHERE t.titulo = :titulo AND t.mensaje = :mensaje")
         Optional<TopicoDto> findByTituloAndMensaje(

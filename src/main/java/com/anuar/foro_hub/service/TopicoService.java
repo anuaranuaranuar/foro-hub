@@ -37,19 +37,27 @@ public class TopicoService {
 
     @Transactional
     public TopicoDtoRes create(TopicoDto topicoDto) {
+        System.out.println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
         Optional<TopicoDto> topicoDB = topicoRepository.findByTituloAndMensaje(topicoDto.titulo(), topicoDto.mensaje());
 
         if (topicoDB.isPresent()) {
             throw new TopicAlreadyExistException("El topico que se intenta crear ya existe");
 
         } else {
-            Curso curso = cursoRepository.findByNombre(topicoDto.curso())
+            System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOO");
+            Curso curso = cursoRepository.findById(topicoDto.curso())
                     .orElseThrow(() -> new CursoNotFoundException("Curso no existe"));
-
-            Usuario autor = usuarioRepository.findByNombre(topicoDto.autor())
+            
+            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX");
+            
+            Usuario autor = usuarioRepository.findById(topicoDto.autor())
                     .orElseThrow(() -> new UsuarioNotFoundException("Usuario no existe"));
 
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>");
+
             Topico topico = topicoMapper.fromTopicDto(topicoDto, autor, curso);
+
+            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
             topico = topicoRepository.save(topico);
 
