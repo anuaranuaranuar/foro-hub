@@ -3,6 +3,7 @@ package com.anuar.foro_hub.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -11,8 +12,8 @@ import com.anuar.foro_hub.domain.Topico;
 import com.anuar.foro_hub.dto.request.TopicoDto;
 
 public interface TopicoRepository extends
-                JpaRepository<Topico, Long> {
-
+                JpaRepository<Topico, Long>,
+                JpaSpecificationExecutor<Topico>{
         Optional<Curso> findByTitulo(String curso);
 
         @Query(value = "select new com.anuar.foro_hub.dto.request.TopicoDto" +

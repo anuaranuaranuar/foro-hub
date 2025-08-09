@@ -2,6 +2,10 @@ package com.anuar.foro_hub.service;
 
 import java.util.Optional;
 
+import org.flywaydb.core.internal.util.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.anuar.foro_hub.domain.Curso;
@@ -16,6 +20,7 @@ import com.anuar.foro_hub.mapper.TopicoMapper;
 import com.anuar.foro_hub.repository.CursoRepository;
 import com.anuar.foro_hub.repository.TopicoRepository;
 import com.anuar.foro_hub.repository.UsuarioRepository;
+import com.anuar.specification.TopicoSpecification;
 
 import jakarta.transaction.Transactional;
 
@@ -37,33 +42,38 @@ public class TopicoService {
 
     @Transactional
     public TopicoDtoRes create(TopicoDto topicoDto) {
-        System.out.println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
+
         Optional<TopicoDto> topicoDB = topicoRepository.findByTituloAndMensaje(topicoDto.titulo(), topicoDto.mensaje());
 
         if (topicoDB.isPresent()) {
             throw new TopicAlreadyExistException("El topico que se intenta crear ya existe");
 
         } else {
-            System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOO");
             Curso curso = cursoRepository.findById(topicoDto.curso())
                     .orElseThrow(() -> new CursoNotFoundException("Curso no existe"));
-            
-            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX");
-            
+
             Usuario autor = usuarioRepository.findById(topicoDto.autor())
                     .orElseThrow(() -> new UsuarioNotFoundException("Usuario no existe"));
 
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>");
-
             Topico topico = topicoMapper.fromTopicDto(topicoDto, autor, curso);
-
-            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
             topico = topicoRepository.save(topico);
 
             return topicoMapper.toTopicoDtoRes(topico);
         }
-
     }
 
+    public Page<TopicoDtoRes> getByPage(String curso, Integer year, Pageable pageable) {
+        Specification<Topico> spec = (root, query, cb) -> cb.isTrue(root.get("status"));
+
+            if(StringUtils.hasText(curso))
+            spec = spec.and(TopicoSpecification.hasNombre(curso));
+
+            if (year != null)
+            spec = spec.and(TopicoSpecification.hasYear(year));    
+            
+        Page<Topico> topicos = topicoRepository.findAll(spec, pageable);
+
+        return topicos.map(topicoMapper::toTopicoDtoRes);
+    }
 }
