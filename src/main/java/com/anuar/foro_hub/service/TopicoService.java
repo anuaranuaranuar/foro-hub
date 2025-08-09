@@ -15,6 +15,7 @@ import com.anuar.foro_hub.dto.request.TopicoDto;
 import com.anuar.foro_hub.dto.response.TopicoDtoRes;
 import com.anuar.foro_hub.exception.CursoNotFoundException;
 import com.anuar.foro_hub.exception.TopicAlreadyExistException;
+import com.anuar.foro_hub.exception.TopicoNotFound;
 import com.anuar.foro_hub.exception.UsuarioNotFoundException;
 import com.anuar.foro_hub.mapper.TopicoMapper;
 import com.anuar.foro_hub.repository.CursoRepository;
@@ -75,5 +76,12 @@ public class TopicoService {
         Page<Topico> topicos = topicoRepository.findAll(spec, pageable);
 
         return topicos.map(topicoMapper::toTopicoDtoRes);
+    }
+
+    public TopicoDtoRes getById(Long id) {
+        Topico topic = topicoRepository.findById(id)
+        .orElseThrow(() -> new TopicoNotFound("no se encontro el topico con el id" + id));
+        
+        return topicoMapper.toTopicoDtoRes(topic);
     }
 }
