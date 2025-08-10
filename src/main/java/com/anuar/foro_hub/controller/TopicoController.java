@@ -7,14 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.HeadersBuilder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.anuar.foro_hub.dto.TopicoPutDto;
 import com.anuar.foro_hub.dto.request.TopicoDto;
 import com.anuar.foro_hub.dto.response.TopicoDtoRes;
 import com.anuar.foro_hub.service.TopicoService;
@@ -55,4 +59,21 @@ public class TopicoController {
         TopicoDtoRes res = topicoService.getById(id);
         return ResponseEntity.ok(res);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TopicoDtoRes> update(
+        @PathVariable Long id,
+        @RequestBody @Valid TopicoPutDto bodyRequired){
+
+        return ResponseEntity.ok(topicoService.update(id, bodyRequired));
+    }
+
+    @PutMapping("/{id}")
+    public HeadersBuilder<?> disable(@PathVariable Long id){
+      topicoService.disable(id);
+
+        return ResponseEntity.noContent();
+    }
+
+
 }

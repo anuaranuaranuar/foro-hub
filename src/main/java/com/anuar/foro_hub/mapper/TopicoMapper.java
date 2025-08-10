@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.anuar.foro_hub.domain.Curso;
 import com.anuar.foro_hub.domain.Topico;
 import com.anuar.foro_hub.domain.Usuario;
+import com.anuar.foro_hub.dto.TopicoPutDto;
 import com.anuar.foro_hub.dto.request.TopicoDto;
 import com.anuar.foro_hub.dto.response.TopicoDtoRes;
 
@@ -35,6 +36,13 @@ public class TopicoMapper {
             topico.getStatus(),
             topico.getAutor().getNombre(),
             topico.getCurso().getNombre());    
+    }
+
+    public Topico setTopico(TopicoPutDto dto, Topico topico) {
+        topico.setTitulo(dto.titulo());
+        topico.setMensaje(dto.mensaje());
+
+        return topico;
     }
 
 }

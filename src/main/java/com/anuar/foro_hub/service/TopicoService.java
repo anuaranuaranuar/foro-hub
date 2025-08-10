@@ -7,10 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.anuar.foro_hub.domain.Curso;
 import com.anuar.foro_hub.domain.Topico;
 import com.anuar.foro_hub.domain.Usuario;
+import com.anuar.foro_hub.dto.TopicoPutDto;
 import com.anuar.foro_hub.dto.request.TopicoDto;
 import com.anuar.foro_hub.dto.response.TopicoDtoRes;
 import com.anuar.foro_hub.exception.CursoNotFoundException;
@@ -21,9 +23,8 @@ import com.anuar.foro_hub.mapper.TopicoMapper;
 import com.anuar.foro_hub.repository.CursoRepository;
 import com.anuar.foro_hub.repository.TopicoRepository;
 import com.anuar.foro_hub.repository.UsuarioRepository;
-import com.anuar.specification.TopicoSpecification;
+import com.anuar.foro_hub.specification.TopicoSpecification;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class TopicoService {
@@ -41,7 +42,7 @@ public class TopicoService {
         this.topicoRepository = topicoRepository;
     }
 
-    @Transactional
+    
     public TopicoDtoRes create(TopicoDto topicoDto) {
 
         Optional<TopicoDto> topicoDB = topicoRepository.findByTituloAndMensaje(topicoDto.titulo(), topicoDto.mensaje());
@@ -64,6 +65,7 @@ public class TopicoService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<TopicoDtoRes> getByPage(String curso, Integer year, Pageable pageable) {
         Specification<Topico> spec = (root, query, cb) -> cb.isTrue(root.get("status"));
 
@@ -78,10 +80,32 @@ public class TopicoService {
         return topicos.map(topicoMapper::toTopicoDtoRes);
     }
 
+    @Transactional(readOnly = true)
     public TopicoDtoRes getById(Long id) {
         Topico topic = topicoRepository.findById(id)
         .orElseThrow(() -> new TopicoNotFound("no se encontro el topico con el id" + id));
         
         return topicoMapper.toTopicoDtoRes(topic);
+    }
+    @Transactional
+    public TopicoDtoRes update(Long id, TopicoPutDto dto) {
+        Topico topico = topicoRepository.findById(id)
+        .orElseThrow(() -> new TopicoNotFound("El topico con el id " + id + "no existe"));
+    
+        Topico updated = topicoMapper.setTopico(dto, topico);
+
+        updated = topicoRepository.save(updated);
+
+        return topicoMapper.toTopicoDtoRes(updated);
+    }
+
+    @Transactional
+    public void disable(Long id) {
+        Topico topico = topicoRepository.findById(id)
+        .orElseThrow(() -> new TopicoNotFound("El topico con el id " + id + "no existe"));
+
+        topico.setStatus(false);
+
+        topicoRepository.save(topico);
     }
 }

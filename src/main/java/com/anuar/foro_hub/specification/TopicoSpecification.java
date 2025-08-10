@@ -1,4 +1,4 @@
-package com.anuar.specification;
+package com.anuar.foro_hub.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
