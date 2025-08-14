@@ -8,8 +8,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.HeadersBuilder;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -68,12 +68,10 @@ public class TopicoController {
         return ResponseEntity.ok(topicoService.update(id, bodyRequired));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public HeadersBuilder<?> disable(@PathVariable Long id){
       topicoService.disable(id);
 
         return ResponseEntity.noContent();
     }
-
-
 }

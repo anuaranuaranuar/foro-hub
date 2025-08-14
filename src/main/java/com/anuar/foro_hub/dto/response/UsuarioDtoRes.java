@@ -1,7 +1,7 @@
-package com.anuar.foro_hub.dto.request;
+package com.anuar.foro_hub.dto.response;
 
-
-public record UsuarioDto(
+public record UsuarioDtoRes(
+        Long id,
 
         String nombre,
 
