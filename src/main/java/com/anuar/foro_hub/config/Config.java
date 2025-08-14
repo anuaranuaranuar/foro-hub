@@ -33,13 +33,16 @@ public class Config {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.POST, "/usuarios").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    req.requestMatchers("/swagger-ui/**").permitAll();
+                    req.requestMatchers("/swagger-ui.html").permitAll();
+                    req.requestMatchers("/v3/api-docs/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-   @Bean
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

@@ -34,18 +34,14 @@ public class SecurityFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        if (request.getRequestURI().startsWith("/usuarios")) {
+        if (request.getRequestURI().startsWith("/usuarios") ||
+                request.getRequestURI().startsWith("/login") ||
+                request.getRequestURI().startsWith("/swagger-ui") ||
+                request.getRequestURI().equals("/swagger-ui.html") ||
+                request.getRequestURI().startsWith("/v3/api-docs")) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        
-        if (request.getRequestURI().startsWith("/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-
 
         String tokenJWT = getToken(request);
         if (StringUtils.hasText(tokenJWT)) {
@@ -66,7 +62,6 @@ public class SecurityFilter extends OncePerRequestFilter {
     public String getToken(HttpServletRequest request) {
 
         String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("XXXXXXXXXXXXXX" + authorizationHeader);
         if (StringUtils.hasText(authorizationHeader)) {
             return authorizationHeader.replace("Bearer ", "");
         }
